@@ -8,9 +8,8 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         title = "ScopeAssist"
-        version = "1.0"
 
-        self.setWindowTitle(title + " " + version)
+        self.setWindowTitle(title)
         self.resize(480, 270)
 
         self.tabs = QTabWidget()
