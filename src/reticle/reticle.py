@@ -32,8 +32,6 @@ class Reticle(QWidget):
         self.target_screen = screens[monitor]
         self._update_geometry()
 
-        self.show()
-
     # --- Drawing ---
     def paintEvent(self, event):
         painter = QPainter(self)
