@@ -1,86 +1,102 @@
-from PySide6.QtWidgets import QWidget, QApplication
-from PySide6.QtGui import QPainter, QPen, QColor, QBrush
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QObject, Signal, QSettings
+from PySide6.QtGui import QColor
 
 
-class Reticle(QWidget):
+class Reticle(QObject):
+    changed = Signal()
+
     def __init__(self, monitor=0, radius=2, transparency=0.8, color="white"):
         super().__init__()
 
-        self.monitor = monitor
-        self.radius = radius
-        self.transparency = transparency
-        self.color = QColor(color)
+        self._monitor = monitor
+        self._radius = radius
+        self._transparency = transparency
+        self._color = QColor(color)
+        self._visible = False
 
-        # Window setup
-        self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.Tool
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.setWindowOpacity(self.transparency)
+    def to_dict(self):
+        return {
+            "monitor": self._monitor,
+            "radius": self._radius,
+            "transparency": self._transparency,
+            "color": self._color.name(),
+            "visible": self._visible,
+        }
 
-        # Monitor setup
-        self.app = QApplication.instance()
-        screens = self.app.screens()
+    def from_dict(self, data):
+        self._monitor = data.get("monitor", 0)
+        self._radius = data.get("radius", 2)
+        self._transparency = data.get("transparency", 0.8)
+        self._color = QColor(data.get("color", "white"))
+        self._visible = data.get("visible", False)
 
-        if monitor >= len(screens):
-            monitor = 0
+        self.changed.emit()
 
-        self.target_screen = screens[monitor]
-        self._update_geometry()
+    def save(self):
+        s = QSettings("ScopeAssist", "Reticle")
+        s.setValue("monitor", self._monitor)
+        s.setValue("radius", self._radius)
+        s.setValue("transparency", self._transparency)
+        s.setValue("color", self._color.name())
+        s.setValue("visible", self._visible)
 
-    # --- Drawing ---
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QBrush(self.color))
-        painter.setPen(QPen(self.color))
+    def load(self):
+        s = QSettings("ScopeAssist", "Reticle")
+        self.from_dict({
+            "monitor": int(s.value("monitor", 0)),
+            "radius": int(s.value("radius", 2)),
+            "transparency": float(s.value("transparency", 0.8)),
+            "color": s.value("color", "white"),
+            "visible": s.value("visible", False) in [True, "true", "1"],
+        })
 
-        size = self.width()
-        painter.drawEllipse(0, 0, size, size)
+    @property
+    def monitor(self):
+        return self._monitor
 
-    # --- Layout ---
-    def _update_geometry(self):
-        screen_geometry = self.target_screen.geometry()
+    @property
+    def radius(self):
+        return self._radius
 
-        size = self.radius * 2
-        x = screen_geometry.x() + (screen_geometry.width() // 2) - (size // 2)
-        y = screen_geometry.y() + (screen_geometry.height() // 2) - (size // 2)
+    @property
+    def transparency(self):
+        return self._transparency
 
-        self.setGeometry(x, y, size, size)
+    @property
+    def color(self):
+        return self._color
 
-    # --- Updates ---
-    def update_reticle(self, monitor=None, radius=None, transparency=None,
-                       color=None):
-        screens = self.app.screens()
+    @property
+    def visible(self):
+        return self._visible
 
-        if monitor is not None:
-            monitor = max(0, min(monitor, len(screens) - 1))
-            self.monitor = monitor
-            self.target_screen = screens[monitor]
+    def set_monitor(self, monitor):
+        if self._monitor != monitor:
+            self._monitor = monitor
+            self.changed.emit()
 
-            geo = self.target_screen.geometry()
-            self.move(geo.x(), geo.y())
+    def set_radius(self, radius):
+        radius = max(1, radius)
+        if self._radius != radius:
+            self._radius = radius
+            self.changed.emit()
 
-        if radius is not None:
-            self.radius = max(1, radius)
+    def set_transparency(self, transparency):
+        transparency = max(0.0, min(1.0, transparency))
+        if self._transparency != transparency:
+            self._transparency = transparency
+            self.changed.emit()
 
-        if transparency is not None:
-            self.transparency = transparency
-            self.setWindowOpacity(self.transparency)
+    def set_color(self, color):
+        new_color = QColor(color)
+        if self._color != new_color:
+            self._color = new_color
+            self.changed.emit()
 
-        if color is not None:
-            self.color = QColor(color)
+    def set_visible(self, visible: bool):
+        if self._visible != visible:
+            self._visible = visible
+            self.changed.emit()
 
-        self._update_geometry()
-        self.update()
-
-    # --- Visibility controls ---
-    def show_reticle(self):
-        self.show()
-
-    def hide_reticle(self):
-        self.hide()
+    def toggle_visibility(self):
+        self.set_visible(not self._visible)

@@ -1,16 +1,15 @@
 from PySide6.QtWidgets import (
     QWidget, QLabel, QSlider, QPushButton, QVBoxLayout, QComboBox,
-    QColorDialog
+    QColorDialog, QApplication
 )
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication
 
 
 class ReticleControlPanel(QWidget):
-    def __init__(self, reticle):
+    def __init__(self, model):
         super().__init__()
 
-        self.reticle = reticle
+        self.model = model
 
         layout = QVBoxLayout()
 
@@ -26,20 +25,22 @@ class ReticleControlPanel(QWidget):
         layout.addWidget(self.screen_dropdown)
 
         # --- Radius ---
-        self.radius_label = QLabel(f"Radius: {self.reticle.radius}")
+        self.radius_label = QLabel(f"Radius: {self.model.radius}")
         self.radius_slider = QSlider(Qt.Horizontal)
         self.radius_slider.setRange(1, 10)
-        self.radius_slider.setValue(self.reticle.radius)
+        self.radius_slider.setValue(self.model.radius)
         self.radius_slider.valueChanged.connect(self.change_radius)
 
         layout.addWidget(self.radius_label)
         layout.addWidget(self.radius_slider)
 
         # --- Transparency ---
-        self.transparency_label = QLabel(f"Transparency: {self.reticle.transparency:.2f}")
+        self.transparency_label = QLabel(
+            f"Transparency: {self.model.transparency:.2f}"
+        )
         self.transparency_slider = QSlider(Qt.Horizontal)
         self.transparency_slider.setRange(0, 100)
-        self.transparency_slider.setValue(int(self.reticle.transparency * 100))
+        self.transparency_slider.setValue(int(self.model.transparency * 100))
         self.transparency_slider.valueChanged.connect(self.change_transparency)
 
         layout.addWidget(self.transparency_label)
@@ -56,42 +57,35 @@ class ReticleControlPanel(QWidget):
 
         layout.addWidget(self.toggle_button)
 
+        self.model.changed.connect(self._update_toggle_button_text)
         self._update_toggle_button_text()
 
         layout.addStretch()
-
         self.setLayout(layout)
 
     # --- Handlers ---
-
     def change_monitor(self, monitor):
-        self.reticle.update_reticle(monitor=monitor)
+        self.model.set_monitor(monitor)
 
     def change_radius(self, radius):
         self.radius_label.setText(f"Radius: {radius}")
-        self.reticle.update_reticle(radius=radius)
+        self.model.set_radius(radius)
 
     def change_transparency(self, transparency):
         alpha = transparency / 100
         self.transparency_label.setText(f"Transparency: {alpha:.2f}")
-        self.reticle.update_reticle(transparency=alpha)
+        self.model.set_transparency(alpha)
 
     def pick_color(self):
         color = QColorDialog.getColor()
         if color.isValid():
-            self.reticle.update_reticle(color=color.name())
+            self.model.set_color(color.name())
 
     def toggle_reticle(self):
-        if self.reticle.isVisible():
-            self.reticle.hide_reticle()
-        else:
-            self.reticle.show_reticle()
-
-        self._update_toggle_button_text()
-
+        self.model.toggle_visibility()
 
     def _update_toggle_button_text(self):
-        if self.reticle.isVisible():
+        if self.model.visible:
             self.toggle_button.setText("Hide Reticle")
         else:
             self.toggle_button.setText("Show Reticle")
