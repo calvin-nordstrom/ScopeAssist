@@ -1,6 +1,14 @@
+import ctypes
 from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QPainter, QPen, QBrush
 from PySide6.QtCore import Qt
+
+
+user32 = ctypes.WinDLL("user32", use_last_error=True)
+
+WS_EX_LAYERED = 0x00080000
+WS_EX_TRANSPARENT = 0x00000020
+GWL_EXSTYLE = -20
 
 
 class ReticleView(QWidget):
@@ -18,8 +26,19 @@ class ReticleView(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
 
+        self.hwnd = int(self.winId())
+        self.make_click_through()
+
         self.app = QApplication.instance()
         self.update_view()
+
+    def make_click_through(self):
+        hwnd = self.hwnd
+
+        style = user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+        style |= WS_EX_LAYERED | WS_EX_TRANSPARENT
+
+        user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
 
     def paintEvent(self, event):
         painter = QPainter(self)
