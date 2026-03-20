@@ -5,7 +5,7 @@ from PySide6.QtGui import QColor
 class Reticle(QObject):
     changed = Signal()
 
-    def __init__(self, monitor=0, radius=2, transparency=0.8, color="white"):
+    def __init__(self, monitor=0, radius=2.0, transparency=0.8, color="white"):
         super().__init__()
 
         self._monitor = monitor
@@ -25,7 +25,7 @@ class Reticle(QObject):
 
     def from_dict(self, data):
         self._monitor = data.get("monitor", 0)
-        self._radius = data.get("radius", 2)
+        self._radius = data.get("radius", 2.0)
         self._transparency = data.get("transparency", 0.8)
         self._color = QColor(data.get("color", "white"))
         self._visible = data.get("visible", False)
@@ -41,7 +41,7 @@ class Reticle(QObject):
         s = QSettings("ScopeAssist", "Reticle")
         self.from_dict({
             "monitor": int(s.value("monitor", 0)),
-            "radius": int(s.value("radius", 2)),
+            "radius": int(s.value("radius", 2.0)),
             "transparency": float(s.value("transparency", 0.8)),
             "color": s.value("color", "white"),
             "visible": s.value("visible", False) in [True, "true", "1"],
@@ -73,7 +73,7 @@ class Reticle(QObject):
             self.changed.emit()
 
     def set_radius(self, radius):
-        radius = max(1, radius)
+        radius = max(1.0, radius)
         if self._radius != radius:
             self._radius = radius
             self.changed.emit()

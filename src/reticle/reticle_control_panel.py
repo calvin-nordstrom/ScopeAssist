@@ -27,10 +27,10 @@ class ReticleControlPanel(QWidget):
         layout.addWidget(self.screen_dropdown)
 
         # --- Radius ---
-        self.radius_label = QLabel(f"Radius: {self.reticle.radius}")
+        self.radius_label = QLabel(f"Radius: {self.reticle.radius:.1f}")
         self.radius_slider = QSlider(Qt.Horizontal)
-        self.radius_slider.setRange(1, 10)
-        self.radius_slider.setValue(self.reticle.radius)
+        self.radius_slider.setRange(10.0, 100.0)
+        self.radius_slider.setValue(self.reticle.radius * 10)
         self.radius_slider.valueChanged.connect(self.change_radius)
 
         layout.addWidget(self.radius_label)
@@ -70,8 +70,9 @@ class ReticleControlPanel(QWidget):
         self.reticle.set_monitor(monitor)
 
     def change_radius(self, radius):
-        self.radius_label.setText(f"Radius: {radius}")
-        self.reticle.set_radius(radius)
+        display_radius = radius / 10
+        self.radius_label.setText(f"Radius: {display_radius:.1f}")
+        self.reticle.set_radius(display_radius)
 
     def change_transparency(self, transparency):
         alpha = transparency / 100
