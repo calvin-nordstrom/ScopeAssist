@@ -2,6 +2,9 @@ from PySide6.QtWidgets import QMainWindow, QTabWidget
 from reticle.reticle import Reticle
 from reticle.reticle_view import ReticleView
 from reticle.reticle_control_panel import ReticleControlPanel
+from scope.scope import Scope
+from scope.scope_view import ScopeView
+from scope.scope_control_panel import ScopeControlPanel
 
 
 class MainWindow(QMainWindow):
@@ -13,6 +16,12 @@ class MainWindow(QMainWindow):
 
         self.tabs = QTabWidget()
 
+        self.scope = Scope()
+        self.scope.load()
+        self.scope_view = ScopeView(self.scope)
+        self.scope_tab = ScopeControlPanel(self.scope)
+        self.tabs.addTab(self.scope_tab, "Scope Controls")
+
         self.reticle = Reticle()
         self.reticle.load()
         self.reticle_view = ReticleView(self.reticle)
@@ -22,6 +31,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.tabs)
 
     def closeEvent(self, event):
+        self.scope.save()
         self.reticle.save()
         
         super().closeEvent(event)
