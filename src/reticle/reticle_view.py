@@ -2,6 +2,7 @@ import ctypes
 from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QPainter, QPen, QBrush
 from PySide6.QtCore import Qt
+from reticle.reticle import Reticle
 
 
 user32 = ctypes.WinDLL("user32", use_last_error=True)
@@ -12,11 +13,11 @@ GWL_EXSTYLE = -20
 
 
 class ReticleView(QWidget):
-    def __init__(self, model):
+    def __init__(self, reticle: Reticle):
         super().__init__()
 
-        self.model = model
-        self.model.changed.connect(self.update_view)
+        self.reticle = reticle
+        self.reticle.changed.connect(self.update_view)
 
         self.setWindowFlags(
             Qt.FramelessWindowHint |
@@ -44,8 +45,8 @@ class ReticleView(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        painter.setBrush(QBrush(self.model.color))
-        painter.setPen(QPen(self.model.color))
+        painter.setBrush(QBrush(self.reticle.color))
+        painter.setPen(QPen(self.reticle.color))
 
         size = self.width()
         painter.drawEllipse(0, 0, size, size)
@@ -53,19 +54,19 @@ class ReticleView(QWidget):
     def update_view(self):
         screens = self.app.screens()
 
-        monitor = max(0, min(self.model.monitor, len(screens) - 1))
+        monitor = max(0, min(self.reticle.monitor, len(screens) - 1))
         screen = screens[monitor]
         geo = screen.geometry()
 
-        size = self.model.radius * 2
+        size = self.reticle.radius * 2
 
         x = geo.x() + (geo.width() // 2) - (size // 2)
         y = geo.y() + (geo.height() // 2) - (size // 2)
 
         self.setGeometry(x, y, size, size)
-        self.setWindowOpacity(self.model.transparency)
+        self.setWindowOpacity(self.reticle.transparency)
 
-        if self.model.visible:
+        if self.reticle.visible:
             self.show()
         else:
             self.hide()
