@@ -37,10 +37,10 @@ class ScopeControlPanel(QWidget):
         layout.addWidget(self.radius_slider)
 
         # --- Magnification ---
-        self.mag_label = QLabel(f"Magnification: {self.scope.mag}x")
+        self.mag_label = QLabel(f"Magnification: {self.scope.mag:.1f}x")
         self.mag_slider = QSlider(Qt.Horizontal)
-        self.mag_slider.setRange(1.0, 10.0)
-        self.mag_slider.setValue(self.scope.mag)
+        self.mag_slider.setRange(10.0, 100.0)
+        self.mag_slider.setValue(int(self.scope.mag * 10))
         self.mag_slider.valueChanged.connect(self.change_mag)
         layout.addWidget(self.mag_label)
         layout.addWidget(self.mag_slider)
@@ -99,8 +99,9 @@ class ScopeControlPanel(QWidget):
         self.scope.set_radius(radius)
 
     def change_mag(self, mag):
-        self.mag_label.setText(f"Magnification: {mag}x")
-        self.scope.set_mag(mag)
+        display_mag = mag / 10
+        self.mag_label.setText(f"Magnification: {display_mag:.1f}x")
+        self.scope.set_mag(display_mag)
 
     def _on_activation_changed(self):
         if self.hold_radio.isChecked():
