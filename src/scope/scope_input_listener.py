@@ -27,7 +27,18 @@ class ScopeInputListener:
         except AttributeError:
             pass
 
-        return str(key).replace("Key.", "").upper()
+        name = str(key).replace("Key.", "").upper()
+
+        mapping = {
+            "CTRL_L": "CTRL",
+            "CTRL_R": "CTRL",
+            "SHIFT_L": "SHIFT",
+            "SHIFT_R": "SHIFT",
+            "ALT_L": "ALT",
+            "ALT_R": "ALT",
+        }
+
+        return mapping.get(name, name)
 
     def normalize_mouse(self, button):
         return str(button).replace("Button.", "").upper()
