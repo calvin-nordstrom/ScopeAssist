@@ -34,11 +34,8 @@ class Reticle(QObject):
 
     def save(self):
         s = QSettings("ScopeAssist", "Reticle")
-        s.setValue("monitor", self._monitor)
-        s.setValue("radius", self._radius)
-        s.setValue("transparency", self._transparency)
-        s.setValue("color", self._color.name())
-        s.setValue("visible", self._visible)
+        for k, v in self.to_dict().items():
+            s.setValue(k, v)
 
     def load(self):
         s = QSettings("ScopeAssist", "Reticle")
