@@ -40,7 +40,7 @@ class ScopeControlPanel(QWidget):
         self.mag_label = QLabel(f"Magnification: {self.scope.mag:.1f}x")
         self.mag_slider = QSlider(Qt.Horizontal)
         self.mag_slider.setRange(10.0, 100.0)
-        self.mag_slider.setValue(int(self.scope.mag * 10))
+        self.mag_slider.setValue(self.scope.mag * 10)
         self.mag_slider.valueChanged.connect(self.change_mag)
         layout.addWidget(self.mag_label)
         layout.addWidget(self.mag_slider)
