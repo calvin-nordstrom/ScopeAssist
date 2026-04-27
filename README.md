@@ -2,11 +2,11 @@
 
 > **Scope Assist** is a lightweight Python overlay tool for gamers who play hardcore shooters with minimal HUD elements. It provides customizable, always-on-top visuals to improve aiming precision when in-game assistance is limited.
 
-## 🌟 Features
+## Features
 
 ScopeAssist current includes two core tools:
 
-### 🔍 Scope Overlay
+### Scope Overlay
 
 A dynamic zoom overlay that simulates magnification for better long-range targeting. It is centered on the selected monitor and simply magnifies the pixels of the application or game beneath it.
 
@@ -21,7 +21,7 @@ A dynamic zoom overlay that simulates magnification for better long-range target
 * **Activation Input** – Bind to a keyboard key or mouse button
 * **Preview Button** – Manually display the scope to visualize current settings
 
-### 🎯 Reticle Overlay
+### Reticle Overlay
 
 A minimal, customizable on-screen reticle for precise center alignment.
 
@@ -33,7 +33,7 @@ A minimal, customizable on-screen reticle for precise center alignment.
 * **Color** – Custom color selection
 * **Preview Button** – Toggle reticle visibility
 
-## 🧠 Use Cases
+## Use Cases
 
 ScopeAssist is especially useful for:
 
@@ -42,7 +42,7 @@ ScopeAssist is especially useful for:
 * Long-distance targeting where built-in zoom is insufficient
 * Improving consistency in aim training scenarios
 
-## ⚙️ How It Works
+## How It Works
 
 ScopeAssist creates always-on-top overlay elements that render independently of the game. This ensures:
 
@@ -50,11 +50,11 @@ ScopeAssist creates always-on-top overlay elements that render independently of 
 * Compatibility with most windowed and borderless fullscreen modes
 * Real-time adjustments without restarting your game
 
-## 🚧 Status
+## Status
 
 ScopeAssist is currently in active development. More features, customization options, and performance improvements are planned.
 
-## 💡 Future Ideas (Planned / Considered)
+## Future Ideas (Planned / Considered)
 
 * Multiple reticle styles (dot, cross, dynamic)
 * Presets and profiles
@@ -62,14 +62,14 @@ ScopeAssist is currently in active development. More features, customization opt
 * Hotkey switching between setups
 * Performance optimizations for high refresh rate displays
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 ScopeAssist is intended as a visual aid tool. Use responsibly and be aware that some games may restrict or prohibit overlays. Always review the terms of service of the games you play.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, feedback, and suggestions are welcome! Feel free to open issues or submit pull requests.
 
-## 📩 Need More Info?
+## Need More Info?
 
 If you'd like a more detailed README (setup instructions, architecture, screenshots, or code examples), just let me know. I'm happy to expand this further.
