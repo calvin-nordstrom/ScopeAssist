@@ -1,6 +1,6 @@
 # ScopeAssist
 
-> **Scope Assist** is a lightweight Python overlay tool for gamers who play hardcore shooters with minimal HUD elements. It provides customizable, always-on-top visuals to improve aiming precision when in-game assistance is limited.
+**Scope Assist** is a lightweight Python overlay tool for gamers who play hardcore shooters with minimal HUD elements. It provides customizable, always-on-top visuals to improve aiming precision when in-game assistance is limited.
 
 ## Features
 
